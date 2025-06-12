@@ -136,3 +136,11 @@ export enum NotificationType {
   "package" = "package",
 }
 
+export type TBikeDetails = {
+  allocated : string,
+  batteryId : string,
+  uid : string,
+  vehicleNo : string,
+  bikeId : string,
+}
+

@@ -1,5 +1,5 @@
-import {_addonPackages, _notifications, _subscriptionPackages, _users, db} from ".";
-import {AddOnPackage, NotificationMessage, SubscriptionPackage} from "./types";
+import {_addonPackages, _notifications, _subscriptionPackages, _users, _vehicles, db} from ".";
+import {AddOnPackage, NotificationMessage, SubscriptionPackage, TBikeDetails} from "./types";
 import * as admin from "firebase-admin";
 
 export const fetchSubscriptionPackage =
@@ -104,4 +104,24 @@ export async function updateSubscriptionPackage(uid: string, subscriptionDocId: 
       throw new Error(error instanceof Error ? error.message : 'An error occurred while fetching subscription.');
     }
   };
+
+  export const fetchBikeByUid = async (uid: string): Promise<TBikeDetails> => {
+    const vehiclesRef = db.collection(_vehicles);
+    try {
+      const querySnapshot = await vehiclesRef
+        .where('uid', '==', uid)
+        .limit(1)
+        .get();
+  
+      if (querySnapshot.empty) {
+        throw new Error(`No vehicle found for UID: ${uid}`);
+      }
+  
+      const doc = querySnapshot.docs[0];
+      return { bikeId: doc.id, ...doc.data() } as TBikeDetails;
+    } catch (error) {
+      throw new Error(error instanceof Error ? error.message : 'An error occurred');
+    }
+  };
+  
   
